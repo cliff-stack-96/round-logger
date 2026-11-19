@@ -1,406 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#101614" />
-  <title>Round Log</title>
-  <style>
-    :root {
-      --bg: #0b100e;
-      --panel: #101614;
-      --surface: #18211d;
-      --fg: #e7f0ea;
-      --muted: #93a49a;
-      --faint: #6d7f75;
-      --line: #2c3b34;
-      --amber: #e2a23a;
-      --ink: #1c1406;
-      --mint: #3cba86;
-      --coral: #e07a62;
-    }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--fg); }
-    body {
-      font-family: "Segoe UI", system-ui, sans-serif;
-      line-height: 1.5;
-    }
-    button, input, textarea { font: inherit; color: inherit; }
-    button { cursor: pointer; }
-    .app { max-width: 920px; margin: 0 auto; padding: 16px 16px 96px; }
-    h1 { margin: 4px 0 0; font-size: 1.6rem; }
-    .kicker { letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); font-size: 0.72rem; }
-    .lead { color: var(--muted); font-size: 0.92rem; max-width: 36rem; }
-    .row { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
-    .chip, .btn {
-      min-height: 44px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: var(--surface);
-      color: var(--muted);
-      padding: 0 14px;
-    }
-    .chip.on, .btn.primary { background: var(--amber); color: var(--ink); border-color: transparent; font-weight: 600; }
-    .badge { border-radius: 999px; border: 1px solid var(--line); padding: 8px 12px; font-size: 0.75rem; color: var(--faint); }
-    .badge.live { color: var(--mint); }
-    .grid { display: grid; grid-cols: 2; gap: 10px; }
-    @media (min-width: 720px) { .grid.four { grid-template-columns: repeat(4, 1fr); } .split { grid-template-columns: 1fr 1fr; } }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; margin-bottom: 12px; }
-    .label { color: var(--faint); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
-    .num { font-family: ui-monospace, Consolas, monospace; font-variant-numeric: tabular-nums; }
-    .big { font-size: 1.6rem; margin: 4px 0 0; }
-    .hint { color: var(--muted); font-size: 0.78rem; margin: 4px 0 0; }
-    .bar { height: 8px; background: var(--bg); border-radius: 99px; overflow: hidden; }
-    .bar > span { display: block; height: 100%; background: var(--amber); }
-    .line { display: flex; justify-content: space-between; gap: 12px; font-size: 0.9rem; margin: 8px 0; }
-    .muted { color: var(--muted); }
-    .mint { color: var(--mint); }
-    .amber { color: var(--amber); }
-    .coral { color: var(--coral); }
-    textarea {
-      width: 100%; min-height: 140px; margin-top: 10px;
-      background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 10px;
-    }
-    .file {
-      display: flex; align-items: center; justify-content: center; min-height: 52px;
-      border: 1px dashed var(--line); border-radius: 12px; background: var(--bg); margin-top: 12px;
-    }
-    .file input { display: none; }
-    nav {
-      position: fixed; left: 0; right: 0; bottom: 0;
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      background: rgba(16, 22, 20, 0.96); border-top: 1px solid var(--line);
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    nav button { background: none; border: 0; min-height: 56px; color: var(--faint); }
-    nav button.on { color: var(--amber); }
-    svg.chart { width: 100%; height: 240px; display: block; }
-    ul.rounds { list-style: none; margin: 0; padding: 0; }
-    ul.rounds li { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line); padding: 10px 0; font-size: 0.86rem; }
-    .hidden { display: none; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Round Log</title>
+<style>
+  :root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --green: #4ade80;
+    --red: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 12px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.4rem; margin-bottom: 12px; text-align: center; }
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .row { display: flex; gap: 8px; margin-bottom: 10px; }
+  input, button, select {
+    font-size: 16px; /* prevents zoom on iOS */
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+  }
+  input {
+    flex: 1;
+    background: #0f172a;
+    color: var(--text);
+    border: 1px solid #334155;
+  }
+  button {
+    background: var(--accent);
+    color: #0f172a;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  button.secondary { background: #334155; color: var(--text); }
+  button.danger { background: var(--red); color: white; }
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 0.9rem;
+  }
+  .stat { background: #0f172a; padding: 10px; border-radius: 8px; text-align: center; }
+  .stat b { display: block; font-size: 1.2rem; color: var(--accent); }
+  .list {
+    max-height: 45vh;
+    overflow-y: auto;
+    font-size: 0.95rem;
+  }
+  .item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #334155;
+  }
+  .item:last-child { border-bottom: none; }
+  .multi { font-weight: 700; }
+  .multi.high { color: var(--green); }
+  .multi.low { color: var(--red); }
+  .time { color: var(--muted); font-size: 0.85rem; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .actions button { flex: 1; min-width: 100px; }
+  #fileInput { display: none; }
+  .empty { text-align: center; color: var(--muted); padding: 30px 0; }
+</style>
 </head>
 <body>
-  <div class="app">
-    <p class="kicker">On this phone</p>
-    <h1>Round Log</h1>
-    <p class="lead">Open the CSV from the computer recorder. This page only reads numbers. It does not open Aviator and it does not predict the next round.</p>
-    <div class="row" id="filters"></div>
-    <div id="view"></div>
+  <h1>Aviator Round Log</h1>
+
+  <!-- Add new round -->
+  <div class="card">
+    <div class="row">
+      <input type="number" id="multiInput" placeholder="e.g. 2.45" step="0.01" min="1" inputmode="decimal">
+      <button onclick="addRound()">Add</button>
+    </div>
+    <div class="actions">
+      <button class="secondary" onclick="document.getElementById('fileInput').click()">Import CSV</button>
+      <button class="secondary" onclick="exportCSV()">Export CSV</button>
+      <button class="danger" onclick="clearAll()">Clear</button>
+    </div>
+    <input type="file" id="fileInput" accept=".csv" onchange="importCSV(event)">
   </div>
-  <nav id="nav"></nav>
-  <script>
-    const KEY = "round-log-v1";
-    const TABS = [
-      ["overview", "Overview"],
-      ["trend", "Trend"],
-      ["history", "Rounds"],
-      ["import", "Add"]
-    ];
-    const FILTERS = [
-      ["all", "All"],
-      ["24h", "24h"],
-      ["3d", "3 days"],
-      ["100", "Last 100"]
-    ];
 
-    function mulberry32(seed) {
-      let a = seed;
-      return function () {
-        a |= 0;
-        a = (a + 0x6d2b79f5) | 0;
-        let t = Math.imul(a ^ (a >>> 15), 1 | a);
-        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-      };
-    }
-    function sampleMultiplier(rand) {
-      const roll = rand();
-      if (roll < 0.52) return Math.round((1 + rand() * 0.95) * 100) / 100;
-      if (roll < 0.78) return Math.round((2 + rand() * 2.8) * 100) / 100;
-      if (roll < 0.9) return Math.round((5 + rand() * 4.5) * 100) / 100;
-      if (roll < 0.98) return Math.round((10 + rand() * 28) * 100) / 100;
-      return Math.round((50 + rand() * 180) * 100) / 100;
-    }
-    function buildSample() {
-      const rand = mulberry32(20261119);
-      const rounds = [];
-      let cursor = Date.parse("2026-11-19T06:10:00.000Z");
-      for (let i = 0; i < 96; i++) {
-        cursor += 18000 + Math.floor(rand() * 42000);
-        rounds.push({ id: "sample-" + i, at: new Date(cursor).toISOString(), multiplier: sampleMultiplier(rand) });
-      }
-      return rounds;
-    }
+  <!-- Stats -->
+  <div class="card">
+    <div class="stats" id="stats">
+      <div class="stat"><b id="total">0</b>Rounds</div>
+      <div class="stat"><b id="avg">–</b>Average</div>
+      <div class="stat"><b id="last10">–</b>Last 10 avg</div>
+      <div class="stat"><b id="max">–</b>Highest</div>
+    </div>
+  </div>
 
-    let state = load();
-    let tab = "overview";
-    let notice = "";
-    let draft = "";
+  <!-- History -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+      <strong>History</strong>
+      <span id="count" class="time">0 rounds</span>
+    </div>
+    <div class="list" id="list">
+      <div class="empty">No rounds yet. Type a multiplier and tap Add.</div>
+    </div>
+  </div>
 
-    function load() {
-      try {
-        const raw = localStorage.getItem(KEY);
-        if (raw) return JSON.parse(raw);
-      } catch (e) {}
-      return { rounds: buildSample(), sample: true, filter: "all" };
-    }
-    function save() {
-      localStorage.setItem(KEY, JSON.stringify(state));
-    }
-    function fmt(n) { return Number(n).toFixed(2) + "x"; }
-    function when(iso) {
-      const d = new Date(iso);
-      const p = (n) => String(n).padStart(2, "0");
-      return d.getUTCFullYear() + "-" + p(d.getUTCMonth() + 1) + "-" + p(d.getUTCDate()) + " " + p(d.getUTCHours()) + ":" + p(d.getUTCMinutes()) + ":" + p(d.getUTCSeconds()) + " UTC";
-    }
-    function span(a, b) {
-      const ms = Math.max(0, Date.parse(b) - Date.parse(a));
-      const h = Math.floor(ms / 3600000);
-      const m = Math.floor((ms % 3600000) / 60000);
-      if (h >= 48) return Math.floor(h / 24) + "d " + (h % 24) + "h";
-      if (h > 0) return h + "h " + m + "m";
-      return m + "m";
-    }
-    function tone(v) { return v >= 10 ? "mint" : v >= 2 ? "amber" : "coral"; }
-    function esc(s) {
-      return String(s)
-        .replace(/&/g, "&" + "amp;")
-        .replace(/</g, "&" + "lt;")
-        .replace(/>/g, "&" + "gt;")
-        .replace(/"/g, "&" + "quot;");
-    }
+<script>
+const STORAGE_KEY = 'aviator_rounds_v1';
 
-    function parseMultiplier(raw) {
-      const cleaned = String(raw).trim().toLowerCase().replace(/x$/, "").replace(/,/g, "");
-      if (!cleaned) return null;
-      const value = Number(cleaned);
-      if (!Number.isFinite(value) || value <= 0 || value > 100000) return null;
-      return Math.round(value * 100) / 100;
-    }
-    function parseStamp(raw) {
-      const text = String(raw).trim().replace(/^"|"$/g, "");
-      const parsed = Date.parse(text);
-      if (!text || Number.isNaN(parsed)) return null;
-      return new Date(parsed).toISOString();
-    }
-    function parseLog(text) {
-      const lines = String(text).split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-      const rounds = [];
-      let clock = Date.now();
-      lines.forEach((line, index) => {
-        if (/^(observed_at|datetime|time)\b/i.test(line)) return;
-        const cells = line.split(/[,;\t]/).map((c) => c.trim().replace(/^"|"$/g, ""));
-        let at = null;
-        let multiplier = null;
-        if (cells.length >= 2) {
-          at = parseStamp(cells[0]);
-          multiplier = parseMultiplier(cells[1] || "");
-          if (multiplier == null) {
-            multiplier = parseMultiplier(cells[0] || "");
-            at = parseStamp(cells[1] || "");
-          }
-        } else multiplier = parseMultiplier(cells[0] || line);
-        if (multiplier == null) return;
-        if (!at) { clock += 20000; at = new Date(clock).toISOString(); }
-        else clock = Date.parse(at);
-        rounds.push({ id: at + "-" + multiplier + "-" + index, at, multiplier });
-      });
-      return rounds.sort((a, b) => a.at.localeCompare(b.at));
-    }
-    function merge(current, incoming) {
-      const seen = new Set(current.map((r) => r.at + "|" + r.multiplier));
-      const next = current.slice();
-      incoming.forEach((r) => {
-        const key = r.at + "|" + r.multiplier;
-        if (seen.has(key)) return;
-        seen.add(key);
-        next.push(r);
-      });
-      return next.sort((a, b) => a.at.localeCompare(b.at));
-    }
-    function visibleRounds() {
-      const rounds = state.rounds;
-      if (state.filter === "100") return rounds.slice(-100);
-      if (state.filter === "all" || !rounds.length) return rounds;
-      const end = Date.parse(rounds[rounds.length - 1].at);
-      const windowMs = state.filter === "24h" ? 86400000 : 3 * 86400000;
-      return rounds.filter((r) => Date.parse(r.at) >= end - windowMs);
-    }
-    function streaks(values) {
-      const high = [], low = [];
-      let h = 0, l = 0;
-      function flush() {
-        if (h) high.push(h);
-        if (l) low.push(l);
-        h = 0; l = 0;
-      }
-      values.forEach((v) => {
-        if (v >= 5) { if (l) { low.push(l); l = 0; } h++; }
-        else if (v < 2) { if (h) { high.push(h); h = 0; } l++; }
-        else flush();
-      });
-      flush();
-      return { high, low };
-    }
-    function analyze(rounds) {
-      if (!rounds.length) return null;
-      const values = rounds.map((r) => r.multiplier);
-      const total = values.length;
-      const sum = values.reduce((a, b) => a + b, 0);
-      const gaps = [];
-      let lastTen = -1;
-      values.forEach((v, i) => {
-        if (v >= 10) {
-          if (lastTen >= 0) gaps.push(i - lastTen);
-          lastTen = i;
-        }
-      });
-      const buckets = [
-        ["Under 2x", 0, 2],
-        ["2x – 5x", 2, 5],
-        ["5x – 10x", 5, 10],
-        ["10x – 50x", 10, 50],
-        ["50x+", 50, Infinity]
-      ].map(([label, lo, hi]) => {
-        const count = values.filter((v) => v >= lo && v < hi).length;
-        return { label, count, pct: (count / total) * 100 };
-      });
-      const byDay = new Map();
-      rounds.forEach((r) => {
-        const day = r.at.slice(0, 10);
-        const list = byDay.get(day) || [];
-        list.push(r.multiplier);
-        byDay.set(day, list);
-      });
-      const daily = [...byDay.entries()].map(([day, list]) => ({
-        day, count: list.length,
-        avg: list.reduce((a, b) => a + b, 0) / list.length,
-        max: Math.max(...list)
-      }));
-      const st = streaks(values);
-      const avgOf = (arr) => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
-      return {
-        total, avg: sum / total, high: Math.max(...values),
-        low: Math.min(...values),
-        start: rounds[0].at,
-        end: rounds[rounds.length - 1].at,
-        count10: values.filter((v) => v >= 10).length,
-        count50: values.filter((v) => v >= 50).length,
-        avgGap10: avgOf(gaps),
-        since10: lastTen < 0 ? total : total - 1 - lastTen,
-        buckets,
-        daily,
-        highRuns: st.high,
-        lowRuns: st.low,
-        longestHigh: st.high.length ? Math.max(...st.high) : 0,
-        longestLow: st.low.length ? Math.max(...st.low) : 0,
-        avgHigh: avgOf(st.high), avgLow: avgOf(st.low)
-      };
-    }
+function load() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
 
-    function ingest(text, mode) {
-      const parsed = parseLog(text);
-      if (!parsed.length) {
-        notice = "Nothing usable. Use the CSV, or one multiplier per line.";
-        render();
-        return;
-      }
-      state.rounds = mode === "replace" ? parsed : merge(state.sample ? [] : state.rounds, parsed);
-      state.sample = false;
-      draft = "";
-      notice = parsed.length + " rounds " + (mode === "replace" ? "loaded" : "added") + ". Saved on this phone.";
-      save();
-      tab = "overview";
+function save(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function addRound() {
+  const input = document.getElementById('multiInput');
+  const val = parseFloat(input.value);
+  if (isNaN(val) || val < 1) {
+    alert('Enter a valid multiplier (e.g. 1.87)');
+    return;
+  }
+  const rounds = load();
+  rounds.unshift({
+    multi: Math.round(val * 100) / 100,
+    time: new Date().toISOString()
+  });
+  save(rounds);
+  input.value = '';
+  input.focus();
+  render();
+}
+
+function clearAll() {
+  if (confirm('Delete all rounds on this phone?')) {
+    localStorage.removeItem(STORAGE_KEY);
+    render();
+  }
+}
+
+function render() {
+  const rounds = load();
+  const list = document.getElementById('list');
+  const total = rounds.length;
+
+  document.getElementById('total').textContent = total;
+  document.getElementById('count').textContent = total + ' rounds';
+
+  if (total === 0) {
+    list.innerHTML = '<div class="empty">No rounds yet. Type a multiplier and tap Add.</div>';
+    document.getElementById('avg').textContent = '–';
+    document.getElementById('last10').textContent = '–';
+    document.getElementById('max').textContent = '–';
+    return;
+  }
+
+  // Stats
+  const sum = rounds.reduce((a, r) => a + r.multi, 0);
+  const avg = (sum / total).toFixed(2);
+  const last10 = rounds.slice(0, 10);
+  const last10avg = (last10.reduce((a, r) => a + r.multi, 0) / last10.length).toFixed(2);
+  const max = Math.max(...rounds.map(r => r.multi)).toFixed(2);
+
+  document.getElementById('avg').textContent = avg + 'x';
+  document.getElementById('last10').textContent = last10avg + 'x';
+  document.getElementById('max').textContent = max + 'x';
+
+  // List
+  list.innerHTML = rounds.map(r => {
+    const cls = r.multi >= 10 ? 'high' : r.multi < 2 ? 'low' : '';
+    const time = new Date(r.time).toLocaleString([], {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'short'});
+    return `<div class="item">
+      <span class="multi ${cls}">${r.multi.toFixed(2)}x</span>
+      <span class="time">${time}</span>
+    </div>`;
+  }).join('');
+}
+
+function exportCSV() {
+  const rounds = load();
+  if (rounds.length === 0) {
+    alert('Nothing to export');
+    return;
+  }
+  let csv = 'multiplier,timestamp\n';
+  rounds.forEach(r => {
+    csv += `${r.multi},${r.time}\n`;
+  });
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'aviator_rounds.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importCSV(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const text = ev.target.result;
+    const lines = text.trim().split('\n');
+    const rounds = [];
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line || line.toLowerCase().startsWith('multiplier')) continue;
+      const parts = line.split(',');
+      const multi = parseFloat(parts[0]);
+      if (isNaN(multi)) continue;
+      const time = parts[1] ? parts[1].trim() : new Date().toISOString();
+      rounds.push({ multi, time });
+    }
+    if (rounds.length === 0) {
+      alert('No valid rounds found in the file');
+      return;
+    }
+    // Keep newest first
+    rounds.sort((a, b) => new Date(b.time) - new Date(a.time));
+    if (confirm(`Import ${rounds.length} rounds? This will replace the current log.`)) {
+      save(rounds);
       render();
     }
+  };
+  reader.readAsText(file);
+  e.target.value = ''; // reset
+}
 
-    function chartSvg(rounds) {
-      const data = rounds.slice(-80);
-      if (data.length < 2) return "<p class='muted'>Need at least two rounds.</p>";
-      const w = 640, h = 220, pad = 28;
-      const max = Math.max(...data.map((r) => r.multiplier), 2);
-      const step = (w - pad * 2) / (data.length - 1);
-      const pts = data.map((r, i) => {
-        const x = pad + i * step;
-        const y = h - pad - ((r.multiplier / max) * (h - pad * 2));
-        return [x, y];
-      });
-      const d = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" ");
-      const fill = d + " L" + pts[pts.length - 1][0].toFixed(1) + " " + (h - pad) + " L" + pts[0][0].toFixed(1) + " " + (h - pad) + " Z";
-      return "<svg class='chart' viewBox='0 0 " + w + " " + h + "'><path d='" + fill + "' fill='rgba(226,162,58,0.18)'></path><path d='" + d + "' fill='none' stroke='#e2a23a' stroke-width='2.4'></path></svg>";
-    }
+// Enter key support
+document.getElementById('multiInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addRound();
+});
 
-    function overview(stats) {
-      const cards = [
-        ["Rounds", String(stats.total), span(stats.start, stats.end)],
-        ["Average", fmt(stats.avg), ""],
-        ["Highest", fmt(stats.high), ""],
-        ["Lowest", fmt(stats.low), ""]
-      ].map(([l, v, h]) => "<div class='card'><div class='label'>" + l + "</div><div class='big num'>" + v + "</div>" + (h ? "<div class='hint'>" + h + "</div>" : "") + "</div>").join("");
-      const bars = stats.buckets.map((b) => "<div class='line'><span>" + b.label + "</span><span class='num muted'>" + b.count + " · " + b.pct.toFixed(1) + "%</span></div><div class='bar'><span style='width:" + Math.max(b.pct, b.count ? 2 : 0) + "%'></span></div>").join("");
-      const days = stats.daily.map((d) => "<div class='line'><span class='muted'>" + d.day + "</span><span class='num'><span class='" + tone(d.max) + "'>" + fmt(d.max) + "</span> <span class='muted'>" + d.count + " rnd</span></span></div>").join("");
-      const note = stats.buckets[0].pct.toFixed(0) + "% landed under 2x. A 10x+ showed up " + stats.count10 + " times" + (stats.avgGap10 ? ", about every " + stats.avgGap10.toFixed(1) + " rounds" : "") + ". " + (stats.since10 === 0 ? "The latest round was 10x or higher." : stats.since10 + " rounds have passed since the last 10x.");
-      return "<div class='grid four'>" + cards + "</div><div class='card'><div class='label'>What the log shows</div><p>" + note + "</p></div><div class='card'><div class='label'>Distribution</div>" + bars + "</div><div class='grid split'><div class='card'><div class='label'>Streaks</div><div class='line'><span class='muted'>High runs (≥ 5x)</span><span class='num'>" + stats.highRuns.length + " · longest " + stats.longestHigh + " · avg " + stats.avgHigh.toFixed(1) + "</span></div><div class='line'><span class='muted'>Low runs (< 2x)</span><span class='num'>" + stats.lowRuns.length + " · longest " + stats.longestLow + " · avg " + stats.avgLow.toFixed(1) + "</span></div><div class='line'><span class='muted'>50x and above</span><span class='num'>" + stats.count50 + " (" + ((stats.count50 / stats.total) * 100).toFixed(1) + "%)</span></div></div><div class='card'><div class='label'>Biggest each day</div>" + days + "</div></div>";
-    }
-
-    function history(rounds) {
-      const rows = rounds.slice().reverse().slice(0, 80).map((r) => "<li><span class='num muted'>" + esc(when(r.at)) + "</span><span class='num " + tone(r.multiplier) + "'>" + fmt(r.multiplier) + "</span></li>").join("");
-      return "<div class='card'><div class='label'>Newest first</div><p class='hint'>Times in UTC</p><ul class='rounds'>" + rows + "</ul></div>";
-    }
-
-    function importView() {
-      return "<div class='card'><div class='label'>Bring a log over</div><p class='lead'>Choose aviator_rounds.csv, or paste multipliers. Saved only on this phone.</p><label class='file'>Choose CSV<input id='file' type='file' accept='.csv,text/csv,text/plain'></label><textarea id='draft' placeholder='2026-11-09T21:28:26+03:00,1.15x&#10;2.41x'>" + esc(draft) + "</textarea><div class='row'><button class='btn primary' id='replace'>Replace log</button><button class='btn' id='add'>Add to log</button></div>" + (notice ? "<p class='mint'>" + esc(notice) + "</p>" : "") + "</div><div class='row'><button class='btn' id='export'>Export CSV</button><button class='btn' id='sample'>Sample log</button><button class='btn' id='clear'>Clear</button></div>";
-    }
-
-    function render() {
-      document.getElementById("filters").innerHTML = FILTERS.map(([id, label]) => "<button class='chip" + (state.filter === id ? " on" : "") + "' data-filter='" + id + "'>" + label + "</button>").join("") + (state.sample ? "<span class='badge'>Sample log</span>" : "<span class='badge live'>Saved on this phone</span>");
-      document.getElementById("nav").innerHTML = TABS.map(([id, label]) => "<button class='" + (tab === id ? "on" : "") + "' data-tab='" + id + "'>" + label + "</button>").join("");
-      const rounds = visibleRounds();
-      const stats = analyze(rounds);
-      const view = document.getElementById("view");
-      if (!stats && tab !== "import") {
-        view.innerHTML = "<div class='card'><h2>No rounds in this view</h2><div class='row'><button class='btn primary' data-tab='import'>Add rounds</button><button class='btn' id='sample'>Load sample</button></div></div>";
-      } else if (tab === "overview") view.innerHTML = overview(stats);
-      else if (tab === "trend") view.innerHTML = "<div class='card'><div class='label'>Last multipliers</div><p class='hint'>History only. Not a forecast.</p>" + chartSvg(rounds) + "</div>";
-      else if (tab === "history") view.innerHTML = history(rounds);
-      else view.innerHTML = importView();
-      bind();
-    }
-
-    function bind() {
-      document.querySelectorAll("[data-filter]").forEach((el) => el.onclick = () => { state.filter = el.dataset.filter; save(); render(); });
-      document.querySelectorAll("[data-tab]").forEach((el) => el.onclick = () => { tab = el.dataset.tab; render(); });
-      const file = document.getElementById("file");
-      if (file) file.onchange = () => {
-        const f = file.files && file.files[0];
-        if (!f) return;
-        const reader = new FileReader();
-        reader.onload = () => ingest(String(reader.result || ""), "replace");
-        reader.readAsText(f);
-      };
-      const box = document.getElementById("draft");
-      if (box) box.oninput = () => { draft = box.value; };
-      const replace = document.getElementById("replace");
-      const add = document.getElementById("add");
-      if (replace) replace.onclick = () => ingest(draft, "replace");
-      if (add) add.onclick = () => ingest(draft, "add");
-      const sample = document.getElementById("sample");
-      if (sample) sample.onclick = () => { state = { rounds: buildSample(), sample: true, filter: "all" }; notice = ""; save(); tab = "overview"; render(); };
-      const clear = document.getElementById("clear");
-      if (clear) clear.onclick = () => { state = { rounds: [], sample: false, filter: state.filter }; notice = "Log cleared on this phone."; save(); render(); };
-      const exp = document.getElementById("export");
-      if (exp) exp.onclick = () => {
-        const lines = ["observed_at,multiplier,event"].concat(state.rounds.map((r) => r.at + "," + r.multiplier.toFixed(2) + "x,logged"));
-        const blob = new Blob([lines.join("\n")], { type: "text/csv" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "aviator_rounds.csv";
-        a.click();
-      };
-    }
-    render();
-  </script>
+render();
+</script>
 </body>
 </html>
